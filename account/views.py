@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import AccountCreateForm, UserCreationForm
+from .forms import AccountCreateForm, UserCreateForm
 from .models import Account
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth import authenticate, login, logout
@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 def register_user(request):
-    user_form = UserCreationForm(request.POST or None)
+    user_form = UserCreateForm(request.POST or None)
     account_form = AccountCreateForm(request.POST or None)
 
     if request.method == "POST" and user_form.is_valid() and account_form.is_valid:

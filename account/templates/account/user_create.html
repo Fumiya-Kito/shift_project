@@ -1,5 +1,5 @@
 {% extends 'account/base.html' %}
-
+{% load crispy_forms_tags %}
 
 {% block body %}
 
@@ -7,13 +7,12 @@
     <div class="sign_form">
 
         <form action="" method="POST">
-            {{ user_form.as_p }}
-            <hr>
-            {{ profile_form.as_p }}
             {% csrf_token %}
+            {{ user_form| crispy }}
+            <hr>
+            {{ profile_form | crispy }}
             <input type="submit" class="btn btn-primary" value="送信">
         </form>
-
     </div>
 </div>
 

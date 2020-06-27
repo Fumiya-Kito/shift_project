@@ -76,41 +76,50 @@ class MonthCalendarMixin(BaseCalendarMixin):
         return calendar_data
 
 
-
-
-class WeekCalendarMixin(BaseCalendarMixin):
-    #? 週間カレンダー機能
-
-    def get_week_days(self):
-        # ?その週の全ての日を返す
-        month = self.kwargs.get('month')
-        year = self.kwargs.get('year')
-        day = self.kwargs.get('day')
-        if month and year and day:
-            date = datetime.date(year=int(year), month=int(month), day=int(day))
-        else:
-            date = datetime.date.today()
-        
-        for week in self._calendar.monthdatescalendar(date.year, date.month):
-            if date in week:
-                return week
-
-
-    # TODO 2weekにすること
-
-    def get_week_calendar(self):
-        self.setup_calendar()
-        # ここを1~15 or 16~最終日 にしたい
-        days = self.get_week_days()
-        first = days[0]
-        last = days[-1]
-        calendar_data = {
-            'now': datetime.date.today(),
-            'week_days': days,
-            'week_previous': first - datetime.timedelta(days=7),
-            'week_next': first + datetime.timedelta(days=7),
-            'week_names': self.get_week_names(),
-            'week_first': first,
-            'week_last': last,
+class MonthWithFormsMixin(MonthCalendarMixin):
+    
+    def get_month_forms(self, start, end, days):
+        # TODO それぞれの日と紐づいたformを作成
+        lookup = {
+            '{}__range'.format(self.date_field):(start, end)
         }
-        return calendar_data
+        queryset = self.model.objects.filter(**lookup)
+        days_count = sum(len(week) for week in days)
+        FormClass = forms.modelformset_factory(self.model, self.form_class, extra=days_count)
+        if self.request.method == 'POST':
+            formset = self.month_formset = FormClass(self.request.POST, queryset=queryset)
+        else:
+            formset = self.month_formset = FormClass(queryset=queryset)
+
+        # {1日のdatetime: 1日に関連するフォーム, 2日のdatetime: 2日のフォーム...}のような辞書を作る
+        day_forms = {day: [] for week in days for day in week}
+
+        # スケジュールがある各日に、そのスケジュールの更新用フォームを配置
+        for bound_form in formset.initial_forms:
+            instance = bound_form.instance
+            date = getattr(instance, self.date_field)
+            day_forms[date].append(bound_form)
+
+        # 各日に、新規作成用フォームを1つずつ配置
+        # zip()は2つのリストを同時にfor分で回す。indexが揃っているものが対応して出てくる
+        for empty_form, (date, empty_list) in zip(formset.extra_forms, day_forms.items()):
+            if day_forms[date] == []:
+                empty_form.initial = {self.date_field: date}
+                empty_list.append(empty_form)
+
+        # day_forms辞書を、周毎に分割する。[{1日: 1日のフォーム...}, {8日: 8日のフォーム...}, ...]
+        # 7個ずつ取り出して分割しています。
+        return [{key: day_forms[key] for key in itertools.islice(day_forms, i, i+7)} for i in range(0, days_count, 7)]
+
+    def get_month_calendar(self):
+        calendar_context = super().get_month_calendar()
+        month_days = calendar_context['month_half_days']
+        month_first = month_days[0][0]
+        month_last = month_days[-1][-1]
+        calendar_context['month_day_forms'] = self.get_month_forms(
+            month_first,
+            month_last,
+            month_days
+        )
+        calendar_context['month_formset'] = self.month_formset
+        return calendar_context

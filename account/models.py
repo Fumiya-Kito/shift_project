@@ -44,7 +44,7 @@ class Account(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     name = models.CharField(max_length=50)
-    section = models.ManyToManyField(Section, blank=True, verbose_name='セクション')
+    section = models.ManyToManyField(Section,blank=True, verbose_name='セクション')
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='1')
     duties =  models.CharField(max_length=1, choices=DUTIES_CHOICES, default='3')
     image = models.ImageField(upload_to='', null=True, blank=True)

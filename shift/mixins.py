@@ -3,6 +3,7 @@ from collections import deque
 import datetime
 import itertools
 from django import forms
+from .models import Shift
 
 class BaseCalendarMixin:
     first_weekday = 5 #土曜始まり
@@ -81,9 +82,12 @@ class MonthWithFormsMixin(MonthCalendarMixin):
     def get_month_forms(self, start, end, days):
         # TODO それぞれの日と紐づいたformを作成
         lookup = {
-            '{}__range'.format(self.date_field):(start, end)
+            '{}__range'.format(self.date_field):(start, end),
+            # 'user__pk':self.kwargs.get('user_pk'),
+            # 'start_time__icontains' : self.time_field ,
         }
         queryset = self.model.objects.filter(**lookup)
+        # queryset = self.model.objects.all()
         days_count = sum(len(week) for week in days)
         FormClass = forms.modelformset_factory(self.model, self.form_class, extra=days_count)
         if self.request.method == 'POST':
@@ -94,18 +98,22 @@ class MonthWithFormsMixin(MonthCalendarMixin):
         # {1日のdatetime: 1日に関連するフォーム, 2日のdatetime: 2日のフォーム...}のような辞書を作る
         day_forms = {day: [] for week in days for day in week}
 
+        # 各日に、新規作成用フォームを1つずつ配置
+        # zip()は2つのリストを同時にfor分で回す。indexが揃っているものが対応して出てくる
+        for empty_form, (date, form_list) in zip(formset.extra_forms, day_forms.items()):
+            # 更新用フォームがないときだけ、新規フォームを配置
+            
+            empty_form.initial = {self.date_field: date}
+            form_list.append(empty_form)
+
+
         # スケジュールがある各日に、そのスケジュールの更新用フォームを配置
         for bound_form in formset.initial_forms:
             instance = bound_form.instance
             date = getattr(instance, self.date_field)
             day_forms[date].append(bound_form)
 
-        # 各日に、新規作成用フォームを1つずつ配置
-        # zip()は2つのリストを同時にfor分で回す。indexが揃っているものが対応して出てくる
-        for empty_form, (date, empty_list) in zip(formset.extra_forms, day_forms.items()):
-            if day_forms[date] == []:
-                empty_form.initial = {self.date_field: date}
-                empty_list.append(empty_form)
+        
 
         # day_forms辞書を、周毎に分割する。[{1日: 1日のフォーム...}, {8日: 8日のフォーム...}, ...]
         # 7個ずつ取り出して分割しています。

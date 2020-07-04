@@ -82,8 +82,8 @@ class MonthWithFormsMixin(MonthCalendarMixin):
     def get_month_forms(self, start, end, days):
         # TODO それぞれの日と紐づいたformを作成
         lookup = {
-            '{}__range'.format(self.date_field):(start, end),
-            # 'user__pk':self.kwargs.get('user_pk'),
+            '{}__range'.format(self.date_field): (start, end),
+            'user__pk': self.kwargs.get('user_pk'),
             # 'start_time__icontains' : self.time_field ,
         }
         queryset = self.model.objects.filter(**lookup)
@@ -100,11 +100,11 @@ class MonthWithFormsMixin(MonthCalendarMixin):
 
         # 各日に、新規作成用フォームを1つずつ配置
         # zip()は2つのリストを同時にfor分で回す。indexが揃っているものが対応して出てくる
-        for empty_form, (date, form_list) in zip(formset.extra_forms, day_forms.items()):
+        for empty_form, (date, empty_list) in zip(formset.extra_forms, day_forms.items()):
             # 更新用フォームがないときだけ、新規フォームを配置
             
             empty_form.initial = {self.date_field: date}
-            form_list.append(empty_form)
+            empty_list.append(empty_form)
 
 
         # スケジュールがある各日に、そのスケジュールの更新用フォームを配置

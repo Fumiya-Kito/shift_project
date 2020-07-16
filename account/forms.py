@@ -15,6 +15,10 @@ class AccountCreateForm(forms.ModelForm):
     class Meta:
         model = Account
         exclude = ('user','image')
+        # widgets = {
+        #     name: forms.HiddenInput,
+        # }
+    
     
     # def clean_section(self):
     #     section = self.cleaned_data['section']

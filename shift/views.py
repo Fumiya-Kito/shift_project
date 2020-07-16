@@ -58,6 +58,21 @@ class MonthWithFormsCalendar(LoginRequiredMixin, mixins.MonthWithFormsMixin, gen
         return render(request, self.template_name, context)
 
 
+class MonthWithScheduleCalendar(LoginRequiredMixin, mixins.MonthWithScheduleMixin, generic.TemplateView):
+    """スケジュール付きの月間カレンダーを表示するビュー"""
+    template_name = 'shift/month_with_schedule.html'
+    model = Shift
+    date_field = 'date'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
+        calendar_context = self.get_month_calendar()
+        context.update(calendar_context)
+        return context
+
+
+
 @login_required
 def shift_create(request):
     shift_form = ShiftCreateForm(request.POST or None)
@@ -72,5 +87,7 @@ def shift_create(request):
         'shift_form':shift_form,
     }
     return render(request,'shift/shift_create.html', context)
+
+
 
 

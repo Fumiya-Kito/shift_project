@@ -1,0 +1,11 @@
+{% extends 'account/base.html' %}
+
+{% block body %}
+
+<div class="container">
+    <p><a href="{% url 'login' %}">ログイン</a>
+    <p><a href="{% url 'register_user' %}">新規登録</a>
+</div>
+
+
+{% endblock body %}

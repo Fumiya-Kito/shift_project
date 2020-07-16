@@ -4,8 +4,10 @@
     Shift App
 </div>
 
-
 {% block body %}
+
+<p><a href="{% url 'month_with_forms' user.pk %}">シフト送信画面へ</a>
+</p>
 
 <div class="container">
     {% for item in object_list %}

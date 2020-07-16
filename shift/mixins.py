@@ -102,7 +102,6 @@ class MonthWithFormsMixin(MonthCalendarMixin):
         # zip()は2つのリストを同時にfor分で回す。indexが揃っているものが対応して出てくる
         for empty_form, (date, empty_list) in zip(formset.extra_forms, day_forms.items()):
             # 更新用フォームがないときだけ、新規フォームを配置
-            
             empty_form.initial = {self.date_field: date}
             empty_list.append(empty_form)
 
@@ -112,6 +111,19 @@ class MonthWithFormsMixin(MonthCalendarMixin):
             instance = bound_form.instance
             date = getattr(instance, self.date_field)
             day_forms[date].append(bound_form)
+
+        # スケジュールがある各日に、そのスケジュールの更新用フォームを配置
+        # for bound_form in formset.initial_forms:
+        #     instance = bound_form.instance
+        #     date = getattr(instance, self.date_field)
+        #     day_forms[date].append(bound_form)
+
+        # # 各日に、新規作成用フォームを配置
+        # for empty_form, (date, form_list) in zip(formset.extra_forms, day_forms.items()):
+        #     # 更新用フォームがないときだけ、新規フォームを配置
+        #     if not form_list:
+        #         empty_form.initial = {self.date_field: date}
+        #         form_list.append(empty_form)
 
         
 
@@ -130,4 +142,41 @@ class MonthWithFormsMixin(MonthCalendarMixin):
             month_days
         )
         calendar_context['month_formset'] = self.month_formset
+        return calendar_context
+
+    
+class MonthWithScheduleMixin(MonthCalendarMixin):
+    """スケジュール付きの、月間カレンダーを提供するMixin"""
+
+    def get_month_schedules(self, start, end, days):
+        """それぞれの日とスケジュールを返す"""
+        lookup = {
+            # '例えば、date__range: (1日, 31日)'を動的に作る
+            '{}__range'.format(self.date_field): (start, end),
+            'user__pk': self.kwargs.get('user_pk'),
+        }
+        # 例えば、Schedule.objects.filter(date__range=(1日, 31日)) になる
+        queryset = self.model.objects.filter(**lookup)
+
+        # {1日のdatetime: 1日のスケジュール全て, 2日のdatetime: 2日の全て...}のような辞書を作る
+        day_schedules = {day: [] for week in days for day in week}
+        for schedule in queryset:
+            schedule_date = getattr(schedule, self.date_field)
+            day_schedules[schedule_date].append(schedule)
+
+        # day_schedules辞書を、周毎に分割する。[{1日: 1日のスケジュール...}, {8日: 8日のスケジュール...}, ...]
+        # 7個ずつ取り出して分割しています。
+        size = len(day_schedules)
+        return [{key: day_schedules[key] for key in itertools.islice(day_schedules, i, i+7)} for i in range(0, size, 7)]
+
+    def get_month_calendar(self):
+        calendar_context = super().get_month_calendar()
+        month_days = calendar_context['month_half_days']
+        month_first = month_days[0][0]
+        month_last = month_days[-1][-1]
+        calendar_context['month_day_schedules'] = self.get_month_schedules(
+            month_first,
+            month_last,
+            month_days
+        )
         return calendar_context

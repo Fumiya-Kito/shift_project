@@ -1,15 +1,40 @@
-<ul>
-    【Your Name】<br>
-    <li>{{ object.name }}</li>
-    【Your Gender】<br>
-    <li>{{ object.get_gender_display }}</li>
-    【Your Section】<br>
-    {% for item in object.section.all %}
-    <li>{{ item.get_name_display }}</li>
-    {% endfor%}
-    【Your Duties】<br>
-    <li>{{ object.get_duties_display }}</li>
+{% extends 'account/base.html' %}
+
+<div class="alert alert-primary" role="alert">
+    Shift App
+</div>
+
+
+{% block body %}
+
+<div class="container">
+    <h1>マイページ</h1>
+    <div class="alert alert-success" role="alert">
+        <p>【Your Name】<br>{{ object.name }}</p>
+    </div>
+    <div class="alert alert-success" role="alert">
+        <p>【Your Gender】<br>{{ object.get_gender_display }}</p>
+    </div>
+    <div class="alert alert-success" role="alert">
+        <p>【Your Section】<br>
+            {% for item in object.section.all %}
+            {{ item.get_name_display }} <br>
+            {% endfor%}
+        </p>
+    </div>
+    <div class="alert alert-success" role="alert">
+        <p>【Your Duties】<br>{{ object.get_duties_display }}</p>
+    </div>
     {% if object.image %}
-    <p><img src="{{ object.image.url }}" width=120></p>
+    <div class="alert alert-success" role="alert">
+        <p><img src="{{ object.image.url }}" width=120></p>
+    </div>
     {% endif %}
-</ul>
+
+    <p><a href="{% url 'month_with_schedule' user.pk %}">シフト確認画面へ</a>
+    <p><a href="{% url 'month_with_forms' user.pk %}">シフト送信画面へ</a>
+    <p><a href="{% url 'logout' %}">ログアウト</a>
+
+</div>
+
+{% endblock body %}

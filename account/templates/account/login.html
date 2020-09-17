@@ -1,6 +1,7 @@
 {% extends 'account/base.html' %}
 
 {% block body %}
+<<<<<<< HEAD
 <!-- 
 <div class="container">
     <form class="form-signin" method="POST" action=''>
@@ -36,5 +37,23 @@
     </form>
 </div>
 
+=======
+
+<div class="container">
+
+    <div class="sign_form">
+
+        <h1>ログイン</h1>
+
+        <form method='POST'>
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-primary">LOG IN</button>
+
+        </form>
+    </div>
+</div>
+>>>>>>> origin/master
 
 {% endblock body %}

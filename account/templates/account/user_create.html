@@ -1,9 +1,14 @@
 {% extends 'account/base.html' %}
+<<<<<<< HEAD
 {% load crispy_forms_tags %}
+=======
+
+>>>>>>> origin/master
 
 {% block body %}
 
 <div class="container">
+<<<<<<< HEAD
     <p><a href="{% url 'login' %}">ログインはこちらから</a>
     <div class="sign_form">
         <h1>SIGN UP</h1>
@@ -17,6 +22,18 @@
 
 
         </form>
+=======
+    <div class="sign_form">
+
+        <form action="" method="POST">
+            {{ user_form.as_p }}
+            <hr>
+            {{ profile_form.as_p }}
+            {% csrf_token %}
+            <input type="submit" class="btn btn-primary" value="送信">
+        </form>
+
+>>>>>>> origin/master
     </div>
 </div>
 

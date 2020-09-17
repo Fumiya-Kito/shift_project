@@ -9,8 +9,11 @@ flake8 = "*"
 
 [packages]
 django = "*"
+<<<<<<< HEAD
 django-crispy-forms = "*"
 pillow = "*"
+=======
+>>>>>>> origin/master
 
 [requires]
 python_version = "3.6"

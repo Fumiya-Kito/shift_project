@@ -43,11 +43,19 @@ class Account(models.Model):
     #     other = ChoiceItem(2, 'その他')
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+<<<<<<< HEAD
     name = models.CharField(verbose_name='名前', max_length=50)
     section = models.ManyToManyField(Section, verbose_name='セクション', blank=True)
     gender = models.CharField(verbose_name='性別', max_length=1, choices=GENDER_CHOICES, default='1')
     duties =  models.CharField(verbose_name='役職', max_length=1, choices=DUTIES_CHOICES, default='3')
     image = models.ImageField(verbose_name='顔写真', upload_to='', null=True, blank=True)
+=======
+    name = models.CharField(max_length=50)
+    section = models.ManyToManyField(Section, blank=True, verbose_name='セクション')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='1')
+    duties =  models.CharField(max_length=1, choices=DUTIES_CHOICES, default='3')
+    image = models.ImageField(upload_to='', null=True, blank=True)
+>>>>>>> origin/master
 
     def __str__(self):
         return self.name

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,6 +15,15 @@ User = get_user_model()
 #     """ユーザーの一覧"""
 #     model = User
 #     template_name = 'shift/user_list.html'
+=======
+from django.shortcuts import render, redirect
+from .forms import ShiftCreateForm
+from django.contrib.auth.decorators import login_required 
+from . import mixins
+from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+>>>>>>> origin/master
 
 class MonthCalendar(LoginRequiredMixin, mixins.MonthCalendarMixin, generic.TemplateView):
     template_name = 'shift/month.html'
@@ -24,6 +34,7 @@ class MonthCalendar(LoginRequiredMixin, mixins.MonthCalendarMixin, generic.Templ
         context.update(calendar_context)
         return context
 
+<<<<<<< HEAD
 class MonthWithFormsCalendar(LoginRequiredMixin, mixins.MonthWithFormsMixin, generic.View):
     """フォーム付きの月間カレンダーを表示するビュー"""
     template_name = 'shift/month_with_forms.html'
@@ -73,6 +84,8 @@ class MonthWithScheduleCalendar(LoginRequiredMixin, mixins.MonthWithScheduleMixi
 
 
 
+=======
+>>>>>>> origin/master
 @login_required
 def shift_create(request):
     shift_form = ShiftCreateForm(request.POST or None)
@@ -89,5 +102,8 @@ def shift_create(request):
     return render(request,'shift/shift_create.html', context)
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master

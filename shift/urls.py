@@ -1,13 +1,17 @@
 from django.urls import path
 from . import views
 
+<<<<<<< HEAD
 # app_name = 'shift'
 
+=======
+>>>>>>> origin/master
 urlpatterns = [
     path('shift_create/', views.shift_create, name='shift_create'),
     # 月間カレンダー表示
     path('', views.MonthCalendar.as_view(), name='month'),
     path('month/<int:year>/<int:month>/<int:day>', views.MonthCalendar.as_view(), name='month'),
+<<<<<<< HEAD
     #月間カレンダーschedule
     path(
         'user/<int:user_pk>/month_with_schedule/',
@@ -26,4 +30,6 @@ urlpatterns = [
         'user/<int:user_pk>/month_with_forms/<int:year>/<int:month>/<int:day>',
         views.MonthWithFormsCalendar.as_view(), name='month_with_forms'
     ),
+=======
+>>>>>>> origin/master
 ]

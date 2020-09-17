@@ -3,11 +3,15 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Account, SECTION_CHOICES
 
 class UserCreateForm(UserCreationForm):
+<<<<<<< HEAD
     def __init__(self, *args, **kwargs):
            super(UserCreateForm, self).__init__(*args, **kwargs)
 
            for fieldname in ['username', 'password1', 'password2']:
                self.fields[fieldname].help_text = None
+=======
+    pass
+>>>>>>> origin/master
 
 class AccountCreateForm(forms.ModelForm):
     section = forms.MultipleChoiceField(choices=SECTION_CHOICES, widget=forms.CheckboxSelectMultiple)
@@ -15,10 +19,13 @@ class AccountCreateForm(forms.ModelForm):
     class Meta:
         model = Account
         exclude = ('user','image')
+<<<<<<< HEAD
         # widgets = {
         #     name: forms.HiddenInput,
         # }
     
+=======
+>>>>>>> origin/master
     
     # def clean_section(self):
     #     section = self.cleaned_data['section']

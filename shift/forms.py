@@ -9,6 +9,7 @@ HOUR_CHOICES = [(dt.time(hour=x, minute=y), '{:02d}:{:02d}'.format(x, y)) for x 
 class ShiftCreateForm(forms.ModelForm):
     class Meta:
         model = Shift
+<<<<<<< HEAD
         # exclude = ['user', 'create_at', 'description']
         fields = ('is_work', 'start_time', 'end_time', 'date',)
         widgets = {
@@ -21,6 +22,13 @@ class ShiftCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+=======
+        fields = ('start_time', 'end_time')
+        widgets = {
+            'start_time': forms.Select(choices=HOUR_CHOICES),
+            'end_time': forms.Select(choices=HOUR_CHOICES),
+        }
+>>>>>>> origin/master
 
     def clean_end_time(self):
         start_time = self.cleaned_data['start_time']

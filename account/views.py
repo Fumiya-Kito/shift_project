@@ -1,16 +1,25 @@
 from django.shortcuts import render, redirect
+<<<<<<< HEAD
 from .forms import AccountCreateForm, UserCreateForm
+=======
+from .forms import AccountCreateForm, UserCreationForm
+>>>>>>> origin/master
 from .models import Account
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth import authenticate, login, logout
 # from django.views.generic import DetailView
 
 # Create your views here.
+<<<<<<< HEAD
 def index(request):
     return render(request,'account/index.html')
 
 def register_user(request):
     user_form = UserCreateForm(request.POST or None)
+=======
+def register_user(request):
+    user_form = UserCreationForm(request.POST or None)
+>>>>>>> origin/master
     account_form = AccountCreateForm(request.POST or None)
 
     if request.method == "POST" and user_form.is_valid() and account_form.is_valid:
@@ -35,7 +44,11 @@ def register_user(request):
         # add manytomanyフィールドで使うcommit=Falseのとき必要
         account_form.save_m2m()
         
+<<<<<<< HEAD
         return redirect('login')
+=======
+        return redirect('list')
+>>>>>>> origin/master
 
     context = {
         'user_form':user_form,
@@ -48,15 +61,25 @@ def loginfunc(request):
         username1= request.POST['username']
         password1 = request.POST['password']
         user = authenticate(request, username=username1, password=password1)
+<<<<<<< HEAD
         
+=======
+>>>>>>> origin/master
 
         # ? ユーザーがいる場合
         if user is not None:
             login(request, user)
+<<<<<<< HEAD
             return redirect('account_detail', pk=user.pk)
         else:
             return render(request, 'account/login.html',{'error':'ログインに失敗しました'})
     return render(request,'account/login.html')
+=======
+            return redirect('list')
+        else:
+            return render(request, 'login.html',{'error':'ログインに失敗しました'})
+    return render(request,'login.html')
+>>>>>>> origin/master
 
 @login_required
 def listfunc(request):

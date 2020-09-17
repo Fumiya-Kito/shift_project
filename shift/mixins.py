@@ -3,7 +3,10 @@ from collections import deque
 import datetime
 import itertools
 from django import forms
+<<<<<<< HEAD
 from .models import Shift
+=======
+>>>>>>> origin/master
 
 class BaseCalendarMixin:
     first_weekday = 5 #土曜始まり
@@ -77,6 +80,7 @@ class MonthCalendarMixin(BaseCalendarMixin):
         return calendar_data
 
 
+<<<<<<< HEAD
 class MonthWithFormsMixin(MonthCalendarMixin):
     
     #TODO コピペして、新規用と更新用フォームを別で作る。templateの方で分岐or 新しいページを作る
@@ -181,3 +185,43 @@ class MonthWithScheduleMixin(MonthCalendarMixin):
             month_days
         )
         return calendar_context
+=======
+
+
+class WeekCalendarMixin(BaseCalendarMixin):
+    #? 週間カレンダー機能
+
+    def get_week_days(self):
+        # ?その週の全ての日を返す
+        month = self.kwargs.get('month')
+        year = self.kwargs.get('year')
+        day = self.kwargs.get('day')
+        if month and year and day:
+            date = datetime.date(year=int(year), month=int(month), day=int(day))
+        else:
+            date = datetime.date.today()
+        
+        for week in self._calendar.monthdatescalendar(date.year, date.month):
+            if date in week:
+                return week
+
+
+    # TODO 2weekにすること
+
+    def get_week_calendar(self):
+        self.setup_calendar()
+        # ここを1~15 or 16~最終日 にしたい
+        days = self.get_week_days()
+        first = days[0]
+        last = days[-1]
+        calendar_data = {
+            'now': datetime.date.today(),
+            'week_days': days,
+            'week_previous': first - datetime.timedelta(days=7),
+            'week_next': first + datetime.timedelta(days=7),
+            'week_names': self.get_week_names(),
+            'week_first': first,
+            'week_last': last,
+        }
+        return calendar_data
+>>>>>>> origin/master

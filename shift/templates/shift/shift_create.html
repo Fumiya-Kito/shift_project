@@ -1,5 +1,9 @@
 {% extends 'account/base.html' %}
+<<<<<<< HEAD
 {% load crispy_forms_tags %}
+=======
+
+>>>>>>> origin/master
 
 {% block body %}
 
@@ -11,7 +15,11 @@
 
         <form method='POST'>
             {% csrf_token %}
+<<<<<<< HEAD
             {{ shift_form|crispy }}
+=======
+            {{ shift_form.as_p }}
+>>>>>>> origin/master
 
             <button type="submit" class="btn btn-primary">Submit!</button>
 
